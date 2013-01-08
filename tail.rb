@@ -1,7 +1,12 @@
 require 'net/ssh'
 require 'highline/import'
 
-puts "Usage: ruby tail.rb <configuration.rb>" unless ARGV.length == 1
+if (ARGV.length != 1)
+  puts "Usage: ruby tail.rb <configuration.rb>" unless ARGV.length == 1
+  exit
+end
+
+#load local config file
 require_relative ARGV[0]
 
 def get_password_for(user)
