@@ -9,6 +9,8 @@ end
 #load local config file
 require_relative ARGV[0]
 
+@@output = File.open(ARGV[0][0..(ARGV[0].rindex('.')-1)] + '.log', 'w')
+
 def get_password_for(user)
   ask("Please enter the ssh password for #{user}") {|q| q.echo = false}
 end
@@ -21,7 +23,8 @@ def do_tail( session, id, fileId, filePath )
     session.open_channel do |channel|
       channel.on_data do |ch, data|
         data.split(/\n/).each do |line|
-          puts "[#{id.ljust(8)} : #{fileId.ljust(5)}] -> #{line}"
+          @@output.puts "[#{id.ljust(8)} : #{fileId.ljust(5)}] -> #{line}"
+          @@output.flush
         end
       end
       channel.exec "tail -F -n #{@@LINES_OF_CONTEXT} #{filePath}"
